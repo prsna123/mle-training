@@ -25,6 +25,10 @@ jobs:
           conda config --show-sources
           conda config --show
 
+      - name: Create Conda Environment
+        run: |
+          conda env create -f env.yml
+          conda activate mle-dev
 
       - name: running code
         run: python nonstandardcode.py
