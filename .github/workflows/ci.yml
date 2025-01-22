@@ -12,6 +12,20 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v3
 
+      - name: activating conda
+        uses: conda-incubator/setup-miniconda@v3
+        with:
+          installer-url: https://github.com/conda-forge/miniforge/releases/download/4.8.3-2/Miniforge-pypy3-4.8.3-2-Linux-x86_64.sh
+          allow-softlinks: true
+          show-channel-urls: true
+          use-only-tar-bz2: true
+      - run: |
+          conda info
+          conda list
+          conda config --show-sources
+          conda config --show
+
+
       - name: running code
         run: python nonstandardcode.py
 
