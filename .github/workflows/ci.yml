@@ -9,10 +9,10 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      -name: Checkout Code
+      - name: Checkout Code
         uses: actions/checkout@v3
 
-      -name: setup conda
+      - name: setup conda
         uses: conda-incubator/setup-miniconda@v3
         with:
           installer-url: https://github.com/conda-forge/miniforge/releases/download/4.8.3-2/Miniforge-pypy3-4.8.3-2-Linux-x86_64.sh
@@ -24,18 +24,18 @@ jobs:
           conda config --show-sources
           conda config --show
 
-      -name: create conda environment
+      - name: create conda environment
         run: |
           conda env create -f env.yml
           conda run -n mle-dev
 
-      -name: Install Flake8
+      - name: Install Flake8
         run: conda install -n mle-dev flake8
 
-      -name: enforcing code standards
+      - name: enforcing code standards
         run: flake8 nonstandardcode.py
 
-      -name: run python code
+      - name: run python code
         run: python nonstandardcode.py
 
 
