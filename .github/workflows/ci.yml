@@ -12,5 +12,8 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v3
 
-      - name: echoing name
-        run: echo "testing"
+      - name: running code
+        uses: python nonstandardcode.py
+
+
+
