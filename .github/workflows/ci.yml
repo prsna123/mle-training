@@ -1,37 +1,41 @@
 name: CI Workflow
 
 on:
+  pull_request:
+    branches:
+      - main
   push:
     branches:
-      - '**' #allows the workflow to run on each push to any branch
+      - 'feature/**'
 
 jobs:
   build:
+    name: Set up Conda Environment
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
         uses: actions/checkout@v3
 
-      - name: activating conda
+      - name: Setup Miniconda
         uses: conda-incubator/setup-miniconda@v3
         with:
-          installer-url: https://github.com/conda-forge/miniforge/releases/download/4.8.3-2/Miniforge-pypy3-4.8.3-2-Linux-x86_64.sh
+          installer-url: https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-Linux-x86_64.sh
           allow-softlinks: true
           show-channel-urls: true
           use-only-tar-bz2: true
-      - run: |
-          conda info
-          conda list
-          conda config --show-sources
-          conda config --show
 
       - name: Create Conda Environment
         run: |
           conda env create -f env.yml
           conda activate mle-dev
+          conda list
 
-      - name: running code
-        run: python nonstandardcode.py
+      - name: Install Flake8
+        run: conda install -n mle-dev flake8 -y
 
+      - name: Run Python Code
+        run: |
+          conda run -n my-env python nonstandardcode.py
 
-
+      - name: Enforce Code Standards
+        run: conda run -n my-env flake8 nonstandardcode.py
