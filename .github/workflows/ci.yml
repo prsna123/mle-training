@@ -6,7 +6,7 @@ on:
       - main
   push:
     branches:
-      - 'feature/**'
+      - "feature/**"
 
 jobs:
   build:
@@ -19,31 +19,29 @@ jobs:
       - name: Setup Miniconda
         uses: conda-incubator/setup-miniconda@v3
         with:
-          conda-version: '24.11.2'
+          conda-version: "24.11.2"
           environment-file: env.yml
           activate-environment: mle-dev
 
       - name: Configure Conda to add 'defaults' channel explicitly
-        run: conda config --add channels defaults
-
-      - name: Initialize Conda
         run: |
-          conda init bash
-          source ~/.bashrc
+          source ~/miniconda/etc/profile.d/conda.sh
+          conda config --add channels defaults
 
       - name: Install flake8
         run: |
+          source ~/miniconda/etc/profile.d/conda.sh
           conda activate mle-dev
           conda install flake8
 
       - name: Run Flake8
         run: |
-          source ~/.bashrc
+          source ~/miniconda/etc/profile.d/conda.sh
           conda activate mle-dev
           flake8 nonstandardcode.py
 
       - name: Run Python Code
         run: |
-          source ~/.bashrc
+          source ~/miniconda/etc/profile.d/conda.sh
           conda activate mle-dev
           python nonstandardcode.py
