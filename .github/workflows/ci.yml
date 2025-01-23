@@ -19,31 +19,26 @@ jobs:
       - name: Setup Miniconda
         uses: conda-incubator/setup-miniconda@v3
         with:
-          installer-url: https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-Linux-x86_64.sh
-          allow-softlinks: true
-          show-channel-urls: true
-          use-only-tar-bz2: false
+          auto-update-conda: true
+          python-version: 3.12
 
-      - name: Initialize Conda
+      - name: Initialize dependencies
         shell: bash
         run: |
-          conda init bash
-          source ~/.bashrc
-
-      - name: Create Conda Environment
-        shell: bash
-        run: |
-          conda env create -f env.yml
+          source $(conda info --base)/etc/profile.d/conda.sh
+          conda env create -f env.yml -n mle-dev
           conda activate mle-dev
-          python --version
+          conda list
 
-      - name: Install Flake8
-        run: conda install -n mle-dev flake8 -y
+      - name: Install and run Flake8
+        run: |
+          source $(conda info --base)/etc/profile.d/conda.sh
+          conda activate mle-dev
+          conda install -y flake8
+          flake8
 
       - name: Run Python Code
         run: |
-          conda run -n mle-dev python nonstandardcode.py
-
-      - name: Enforce Code Standards
-        run: conda run -n mle-dev flake8 nonstandardcode.py
-
+          source $(conda info --base)/etc/profile.d/conda.sh
+          conda activate mle-dev
+          python nonstandardcode.py
