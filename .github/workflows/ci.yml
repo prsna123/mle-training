@@ -31,6 +31,11 @@ jobs:
           conda init bash
           source ~/.bashrc
 
+      - name: Install flake8
+        run: |
+          conda activate mle-dev
+          conda install flake8
+
       - name: Run Flake8
         run: |
           source ~/.bashrc
