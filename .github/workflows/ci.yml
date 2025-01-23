@@ -19,7 +19,7 @@ jobs:
       - name: Setup Miniconda
         uses: conda-incubator/setup-miniconda@v3
         with:
-          conda-version: "latest"
+          conda-version: "24.11.2"
           environment-file: env.yml
           activate-environment: mle-dev
 
