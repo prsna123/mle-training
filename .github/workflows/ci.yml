@@ -21,7 +21,7 @@ jobs:
         with:
           conda-version: '24.11.2'
           environment-file: env.yml
-          activate-environement: mle-dev
+          activate-environment: mle-dev
 
       - name: Configure Conda to add 'defaults' channel explicitly
         run: conda config --add channels defaults
