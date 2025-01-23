@@ -28,14 +28,14 @@ jobs:
         run: |
           conda env create -f env.yml
           conda activate mle-dev
-          conda list
 
       - name: Install Flake8
         run: conda install -n mle-dev flake8 -y
 
       - name: Run Python Code
         run: |
-          conda run -n my-env python nonstandardcode.py
+          conda run -n mle-dev python nonstandardcode.py
 
       - name: Enforce Code Standards
-        run: conda run -n my-env flake8 nonstandardcode.py
+        run: conda run -n mle-dev flake8 nonstandardcode.py
+
