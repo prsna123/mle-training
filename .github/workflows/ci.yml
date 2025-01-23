@@ -19,27 +19,27 @@ jobs:
       - name: Setup Miniconda
         uses: conda-incubator/setup-miniconda@v3
         with:
+          conda-version: '24.11.3'
+          environment-file: env.yml
+          activate-environement: mle-dev
           auto-update-conda: true
-          python-version: 3.12
 
-      - name: Initialize dependencies
-        shell: bash
-        run: |
-          source $(conda info --base)/etc/profile.d/conda.sh
-          conda env create -f env.yml -n mle-dev
-          conda activate mle-dev
-          conda list
+      - name: Configure Conda to add 'defaults' channel explicitly
+        run: conda config --add channels defaults
 
-      - name: Install and run Flake8
+      - name: Initialize Conda
         run: |
-          source $(conda info --base)/etc/profile.d/conda.sh
+          conda init bash
+          source ~/.bashrc
+
+      - name: Run Flake8
+        run: |
+          source ~/.bashrc
           conda activate mle-dev
-          conda install -y flake8
-          flake8
+          flake8 nonstandardcode.py
 
       - name: Run Python Code
         run: |
-          source $(conda info --base)/etc/profile.d/conda.sh
-          python -c "import pandas as pd; print('Pandas installed:', pd.__version__)"
+          source ~/.bashrc
           conda activate mle-dev
           python nonstandardcode.py
