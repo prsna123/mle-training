@@ -19,7 +19,7 @@ jobs:
       - name: Setup Miniconda
         uses: conda-incubator/setup-miniconda@v3
         with:
-          conda-version: "24.11.2"
+          conda-version: "latest"
           environment-file: env.yml
           activate-environment: mle-dev
 
@@ -32,7 +32,7 @@ jobs:
         run: |
           source $CONDA/etc/profile.d/conda.sh
           conda activate mle-dev
-          conda install -y flake8
+          conda install -y flake8  # Ensures flake8 is available
 
       - name: Run Flake8
         run: |
