@@ -19,10 +19,9 @@ jobs:
       - name: Setup Miniconda
         uses: conda-incubator/setup-miniconda@v3
         with:
-          conda-version: '24.11.3'
+          conda-version: '24.11.2'
           environment-file: env.yml
           activate-environement: mle-dev
-          auto-update-conda: true
 
       - name: Configure Conda to add 'defaults' channel explicitly
         run: conda config --add channels defaults
