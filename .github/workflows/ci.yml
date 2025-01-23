@@ -24,10 +24,18 @@ jobs:
           show-channel-urls: true
           use-only-tar-bz2: false
 
+      - name: Initialize Conda
+        shell: bash
+        run: |
+          conda init bash
+          source ~/.bashrc
+
       - name: Create Conda Environment
+        shell: bash
         run: |
           conda env create -f env.yml
           conda activate mle-dev
+          python --version
 
       - name: Install Flake8
         run: conda install -n mle-dev flake8 -y
