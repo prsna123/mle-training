@@ -40,5 +40,6 @@ jobs:
       - name: Run Python Code
         run: |
           source $(conda info --base)/etc/profile.d/conda.sh
+          python -c "import pandas as pd; print('Pandas installed:', pd.__version__)"
           conda activate mle-dev
           python nonstandardcode.py
