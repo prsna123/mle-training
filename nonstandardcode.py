@@ -1,5 +1,6 @@
 import os
 import tarfile
+import warnings
 
 import numpy as np
 import pandas as pd
@@ -17,6 +18,9 @@ from sklearn.model_selection import (
 )
 from sklearn.tree import DecisionTreeRegressor
 
+warnings.filterwarnings("ignore", category=DeprecationWarning)
+
+
 DOWNLOAD_ROOT = "https://raw.githubusercontent.com/ageron/handson-ml/master/"
 HOUSING_PATH = os.path.join("datasets", "housing")
 HOUSING_URL = DOWNLOAD_ROOT + "datasets/housing/housing.tgz"
@@ -27,7 +31,7 @@ def fetch_housing_data(housing_url=HOUSING_URL, housing_path=HOUSING_PATH):
     tgz_path = os.path.join(housing_path, "housing.tgz")
     urllib.request.urlretrieve(housing_url, tgz_path)
     housing_tgz = tarfile.open(tgz_path)
-    housing_tgz.extractall(path=housing_path)
+    housing_tgz.extractall(path=housing_path, filter=None)
     housing_tgz.close()
 
 
@@ -36,7 +40,8 @@ def load_housing_data(housing_path=HOUSING_PATH):
     return pd.read_csv(csv_path)
 
 
-housing = load_housing_data
+fetch_housing_data()
+housing = load_housing_data()
 
 
 train_set, test_set = train_test_split(housing, test_size=0.2, random_state=42)
@@ -80,8 +85,12 @@ housing = strat_train_set.copy()
 housing.plot(kind="scatter", x="longitude", y="latitude")
 housing.plot(kind="scatter", x="longitude", y="latitude", alpha=0.1)
 
-corr_matrix = housing.corr()
-corr_matrix["median_house_value"].sort_values(ascending=False)
+housing_num = housing.select_dtypes(include=[np.number])
+
+
+corr_matrix = housing_num.corr()
+print(corr_matrix["median_house_value"].sort_values(ascending=False))
+
 housing["rooms_per_household"] = housing["total_rooms"] / housing["households"]
 housing["bedrooms_per_room"] = housing["total_bedrooms"] / housing["total_rooms"]
 housing["population_per_household"] = housing["population"] / housing["households"]
