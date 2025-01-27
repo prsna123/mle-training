@@ -1,0 +1,50 @@
+name: Deploy and Run Package
+
+on:
+  workflow_run:
+    workflows:
+      - Build and Upload Artifacts
+    types:
+      - completed
+
+jobs:
+  deploy:
+    name: Deploy and Run the Package
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set Default Shell to Bash
+        run: |
+          echo "Setting default shell to bash for conda compatibility"
+        shell: bash
+
+      - name: Setup Miniconda
+        uses: conda-incubator/setup-miniconda@v3
+        with:
+          conda-version: "24.11.2"
+          environment-file: env.yml
+          activate-environment: mle-dev
+
+      - name: Initialize Conda Environment
+        id: conda-init
+        run: |
+          source $CONDA/etc/profile.d/conda.sh
+          conda activate mle-dev
+          conda config --add channels defaults
+
+      - name: Download Build Artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: package-artifacts
+          path: dist/
+
+      - name: Install the Built Package
+        run: |
+          source $CONDA/etc/profile.d/conda.sh
+          conda activate mle-dev
+          pip install dist/*.whl
+
+      - name: Run the Installed Package
+        run: |
+          source $CONDA/etc/profile.d/conda.sh
+          conda activate mle-dev
+          python -m ml_package.nonstandardcode
