@@ -38,7 +38,7 @@ jobs:
         run: |
           source $CONDA/etc/profile.d/conda.sh
           conda activate mle-dev
-          flake8 nonstandardcode.py
+          flake8 src/ml_package/nonstandardcode.py
 
       - name: Display Directory Tree Before Build
         run: tree .
@@ -62,4 +62,4 @@ jobs:
         run: |
           source $CONDA/etc/profile.d/conda.sh
           conda activate mle-dev
-          python nonstandardcode.py
+          python src/ml_package/nonstandardcode.py
