@@ -26,6 +26,7 @@ jobs:
       - name: Configure Conda to add 'defaults' channel explicitly
         run: |
           source $CONDA/etc/profile.d/conda.sh
+          conda init bash
           conda config --add channels defaults
 
       - name: Install flake8
