@@ -34,17 +34,16 @@ jobs:
           source $CONDA/etc/profile.d/conda.sh
           conda activate mle-dev
           conda config --add channels defaults
-          echo "CONDA_ENV_INITIALIZED=true" >> $GITHUB_ENV
 
       - name: Install and run flake8
         run: |
+          source $CONDA/etc/profile.d/conda.sh
+          conda activate mle-dev
           conda install -y flake8
           flake8 nonstandardcode.py
-        env:
-          CONDA_ENV_INITIALIZED: ${{ env.CONDA_ENV_INITIALIZED }}
 
       - name: Run Python Code
         run: |
+          source $CONDA/etc/profile.d/conda.sh
+          conda activate mle-dev
           python nonstandardcode.py
-        env:
-          CONDA_ENV_INITIALIZED: ${{ env.CONDA_ENV_INITIALIZED }}
