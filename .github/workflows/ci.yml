@@ -16,6 +16,11 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v3
 
+      - name: Set Default Shell to Bash
+        run: |
+          echo "Setting default shell to bash for conda compatibility"
+        shell: bash
+
       - name: Setup Miniconda
         uses: conda-incubator/setup-miniconda@v3
         with:
@@ -23,20 +28,23 @@ jobs:
           environment-file: env.yml
           activate-environment: mle-dev
 
-      - name: Configure Conda to add 'defaults' channel explicitly
+      - name: Initialize Conda Environment
+        id: conda-init
         run: |
           source $CONDA/etc/profile.d/conda.sh
+          conda activate mle-dev
           conda config --add channels defaults
+          echo "CONDA_ENV_INITIALIZED=true" >> $GITHUB_ENV
 
       - name: Install and run flake8
         run: |
-          source $CONDA/etc/profile.d/conda.sh
-          conda activate mle-dev
           conda install -y flake8
           flake8 nonstandardcode.py
+        env:
+          CONDA_ENV_INITIALIZED: ${{ env.CONDA_ENV_INITIALIZED }}
 
       - name: Run Python Code
         run: |
-          source $CONDA/etc/profile.d/conda.sh
-          conda activate mle-dev
           python nonstandardcode.py
+        env:
+          CONDA_ENV_INITIALIZED: ${{ env.CONDA_ENV_INITIALIZED }}
