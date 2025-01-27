@@ -30,15 +30,14 @@ jobs:
 
       - name: Install flake8
         run: |
-          source $CONDA/etc/profile.d/conda.sh
-          conda install -y flake8  # Ensures flake8 is available
+          conda activate mle-dev
+          conda install -y flake8
+          which flake8
 
       - name: Run Flake8
         run: |
-          source $CONDA/etc/profile.d/conda.sh
           flake8 nonstandardcode.py
 
       - name: Run Python Code
         run: |
-          source $CONDA/etc/profile.d/conda.sh
           python nonstandardcode.py
