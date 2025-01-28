@@ -69,13 +69,13 @@ jobs:
       - name: Install the Built Package
         run: |
           source $CONDA/etc/profile.d/conda.sh
-          conda activate mle-dev
           pip install dist/*.whl
 
-      - name: Install the Built Package
+      - name: test the Built Package
         run: |
           source $CONDA/etc/profile.d/conda.sh
           conda activate mle-dev
+          conda install -y pytest
           python -m pytest tests/test_package_installed.py
 
       - name: Run the Installed Package
