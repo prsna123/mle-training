@@ -76,7 +76,7 @@ jobs:
           source $CONDA/etc/profile.d/conda.sh
           conda activate mle-dev
           conda install -y pytest
-          python -m pytest tests/test_package_installed.py
+          python -m pytest tests/test_nonstandardcode.py
 
       - name: Run the Installed Package
         run: |
