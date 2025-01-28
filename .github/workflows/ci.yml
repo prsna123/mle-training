@@ -72,6 +72,12 @@ jobs:
           conda activate mle-dev
           pip install dist/*.whl
 
+       - name: Run Package Installation Test
+        run: |
+          source $CONDA/etc/profile.d/conda.sh
+          conda activate mle-dev
+          python -m pytest tests/test_package_installed.py
+
       - name: Run the Installed Package
         run: |
           source $CONDA/etc/profile.d/conda.sh
