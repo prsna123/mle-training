@@ -1,4 +1,4 @@
-name: Build and Upload Artifacts
+name: Build, Upload, Deploy, and Run Package
 
 on:
   pull_request:
@@ -9,8 +9,8 @@ on:
       - "feature/**"
 
 jobs:
-  build:
-    name: Set up Conda Environment and Build Package
+  build_and_deploy:
+    name: Build, Deploy, and Run Package
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
@@ -35,7 +35,7 @@ jobs:
           conda activate mle-dev
           conda config --add channels defaults
 
-      - name: Install and run flake8
+      - name: Install and Run Flake8
         run: |
           source $CONDA/etc/profile.d/conda.sh
           conda activate mle-dev
@@ -59,3 +59,21 @@ jobs:
         with:
           name: package-artifacts
           path: dist/
+
+      - name: Download Build Artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: package-artifacts
+          path: dist/
+
+      - name: Install the Built Package
+        run: |
+          source $CONDA/etc/profile.d/conda.sh
+          conda activate mle-dev
+          pip install dist/*.whl
+
+      - name: Run the Installed Package
+        run: |
+          source $CONDA/etc/profile.d/conda.sh
+          conda activate mle-dev
+          python -m ml_package.nonstandardcode
