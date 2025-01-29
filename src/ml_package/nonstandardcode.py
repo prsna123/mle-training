@@ -83,6 +83,7 @@ for set_ in (strat_train_set, strat_test_set):
 
 housing = strat_train_set.copy()
 # housing.plot(kind="scatter", x="longitude", y="latitude")
+# housing.plot(kind="scatter", x="longitude", y="latitude")
 # housing.plot(kind="scatter", x="longitude", y="latitude", alpha=0.1)
 
 housing_num = housing.select_dtypes(include=[np.number])

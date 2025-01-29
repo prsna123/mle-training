@@ -1,4 +1,4 @@
-name: CI Workflow
+name: Build, Upload, Deploy, and Run Package
 
 on:
   pull_request:
@@ -9,8 +9,8 @@ on:
       - "feature/**"
 
 jobs:
-  build:
-    name: Set up Conda Environment
+  build_and_deploy:
+    name: Build, Deploy, and Run Package
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
@@ -35,15 +35,45 @@ jobs:
           conda activate mle-dev
           conda config --add channels defaults
 
-      - name: Install and run flake8
+      - name: Install and Run Flake8
         run: |
           source $CONDA/etc/profile.d/conda.sh
           conda activate mle-dev
           conda install -y flake8
-          flake8 nonstandardcode.py
+          flake8 src/ml_package/nonstandardcode.py
 
-      - name: Run Python Code
+      - name: Display Directory Tree Before Build
+        run: tree .
+
+      - name: Build Package
         run: |
           source $CONDA/etc/profile.d/conda.sh
           conda activate mle-dev
-          python nonstandardcode.py
+          python setup.py sdist bdist_wheel
+
+      - name: Display Directory Tree After Build
+        run: tree .
+
+      - name: Upload Build Artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: package-artifacts
+          path: dist/
+
+      - name: Download Build Artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: package-artifacts
+          path: dist/
+
+      - name: Install the Built Package
+        run: |
+          source $CONDA/etc/profile.d/conda.sh
+          conda activate mle-dev
+          pip install dist/*.whl
+
+      - name: Run the Installed Package
+        run: |
+          source $CONDA/etc/profile.d/conda.sh
+          conda activate mle-dev
+          python -m ml_package.nonstandardcode

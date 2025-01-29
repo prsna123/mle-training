@@ -2,3 +2,6 @@
 __pycache__/
 *.csv
 *.tgz
+build/
+dist/
+*.egg-info/
