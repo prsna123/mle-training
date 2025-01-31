@@ -82,4 +82,4 @@ jobs:
         run: |
           source $CONDA/etc/profile.d/conda.sh
           conda activate mle-dev
-          python -m ml_package.main.py
+          python -m ml_package.main
