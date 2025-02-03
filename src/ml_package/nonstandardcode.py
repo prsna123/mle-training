@@ -62,7 +62,9 @@ def income_cat_proportions(data):
     return data["income_cat"].value_counts() / len(data)
 
 
-train_set, test_set = train_test_split(housing, test_size=0.2, random_state=42)
+# this line is not required,
+# since we have stratifiedshufflesplit, also this line is repetative
+# train_set, test_set = train_test_split(housing, test_size=0.2, random_state=42) ->
 
 compare_props = pd.DataFrame(
     {

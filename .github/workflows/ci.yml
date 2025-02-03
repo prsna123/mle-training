@@ -55,13 +55,13 @@ jobs:
         run: tree .
 
       - name: Upload Build Artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: package-artifacts
           path: dist/
 
       - name: Download Build Artifacts
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: package-artifacts
           path: dist/
@@ -82,4 +82,4 @@ jobs:
         run: |
           source $CONDA/etc/profile.d/conda.sh
           conda activate mle-dev
-          python -m ml_package.nonstandardcode
+          python -m ml_package.main
