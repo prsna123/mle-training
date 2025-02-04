@@ -9,6 +9,19 @@ from ml_package.data_ingestion import fetch_housing_data, load_housing_data
 from ml_package.data_preprocessing import preprocess_data, stratified_split
 from ml_package.training import train_linear_regression
 
+SAMPLE_TEST_DATA = {
+    "longitude": [-122.23, -122.24, -125.22],
+    "latitude": [37.2, 36.21, 37.9],
+    "house_median_age": [32, None, 12],
+    "total_rooms": [880, None, 167],
+    "total_bedrooms": [67, 21, 45],
+    "population": [332, 168, 250],
+    "households": [243, None, 222],
+    "median_income": [8.23, 9.22, 1.2],
+    "median_house_value": [425600, 452060, 404065],
+    "ocean_proximity": ["NEAR_BAY", "INLAND", "NEAR_BAY"],
+}
+
 
 def test_ispackage_installed():
     """
@@ -59,20 +72,9 @@ def test_stratified_split():
 def test_preprocess_data():
     """
     verifies that it returns the data without any NaN values
+    No NaN values after preprocessing
     """
-    test_data = {
-        "longitude": [-122.23, -122.24, -125.22],
-        "latitude": [37.2, 36.21, 37.9],
-        "house_median_age": [32, None, 12],
-        "total_rooms": [880, None, 167],
-        "total_bedrooms": [67, 21, 45],
-        "population": [332, 168, 250],
-        "households": [243, None, 222],
-        "median_income": [8.23, 9.22, 1.2],
-        "median_house_value": [425600, 452060, 404065],
-        "ocean_proximity": ["NEAR_BAY", "INLAND", "NEAR_BAY"],
-    }
-    test_data_df = pd.DataFrame(test_data)
+    test_data_df = pd.DataFrame(SAMPLE_TEST_DATA)
     processed_Data = preprocess_data(test_data_df)
     assert processed_Data.isna().sum().sum() == 0, "There are still missing values!"
 
@@ -88,24 +90,14 @@ def test_preprocess_data():
 
 def test_train_linear_regression():
     """
-    Verify the Linear Regression model training.
+    Tests Linear Regression training by verifying:
+    - No NaN values after preprocessing
+    - Model is successfully trained
+    - RMSE is a valid, non-negative number
     """
 
-    test_data = {
-        "longitude": [-122.23, -122.24, -125.22],
-        "latitude": [37.2, 36.21, 37.9],
-        "house_median_age": [32, None, 12],
-        "total_rooms": [880, None, 167],
-        "total_bedrooms": [67, 21, 45],
-        "population": [332, 168, 250],
-        "households": [243, None, 222],
-        "median_income": [8.23, 9.22, 1.2],
-        "median_house_value": [425600, 452060, 404065],  # Target column
-        "ocean_proximity": ["NEAR_BAY", "INLAND", "NEAR_BAY"],
-    }
-
     # Creating DataFrame
-    test_data_df = pd.DataFrame(test_data)
+    test_data_df = pd.DataFrame(SAMPLE_TEST_DATA)
 
     features = test_data_df.drop("median_house_value", axis=1)
     labels = test_data_df["median_house_value"].copy()
