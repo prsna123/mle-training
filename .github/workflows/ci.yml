@@ -129,10 +129,10 @@ jobs:
         run: |
           source $CONDA/etc/profile.d/conda.sh
           conda activate mle-dev
-          python src/ml_package/scripts/ingest_data.py ml_package/datasets/housing/
-          echo "before"
-          ls -R ml_package/datasets/housing/
+          python src/ml_package/scripts/ingest_data.py src/ml_package/datasets/housing/
+          echo "Before Preprocessing"
+          ls -R src/ml_package/datasets/housing/
           python src/ml_package/scripts/preprocess_data.py src/ml_package/datasets/housing/housing.csv src/ml_package/datasets/housing/housing_preprocessed.csv
-          echo "after"
-          ls -R ml_package/datasets/housing/
+          echo "After Preprocessing"
+          ls -R src/ml_package/datasets/housing/
           python src/ml_package/scripts/score.py src/ml_package/datasets/housing/housing_preprocessed.csv
