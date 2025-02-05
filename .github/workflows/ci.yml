@@ -130,5 +130,5 @@ jobs:
           source $CONDA/etc/profile.d/conda.sh
           conda activate mle-dev
           python src/ml_package/scripts/ingest_data.py ml_package/datasets/housing/
-          python src/ml_package/scripts/preprocess_data.py ml_package/datasets/housing/housing_preprocessed.csv ml_package/models/
-          python src/ml_package/scripts/score.py ml_package/models/best_model.pkl ml_package/datasets/housing/housing_preprocessed.csv
+          python src/ml_package/scripts/preprocess_data.py ml_package/datasets/housing/housing.csv ml_package/datasets/housing/housing_preprocessed.csv
+          python sec/ml_package/scripts/score.py src/ml_package/datasets/housing/housing_preprocessed.csv
