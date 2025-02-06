@@ -9,17 +9,12 @@ on:
       - "feature/**"
 
 jobs:
-  build_and_deploy:
-    name: Build, Deploy, and Run Package
+  unit_test:
+    name: Unit Test Job
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
         uses: actions/checkout@v3
-
-      - name: Set Default Shell to Bash
-        run: |
-          echo "Setting default shell to bash for conda compatibility"
-        shell: bash
 
       - name: Setup Miniconda
         uses: conda-incubator/setup-miniconda@v3
@@ -29,7 +24,6 @@ jobs:
           activate-environment: mle-dev
 
       - name: Initialize Conda Environment
-        id: conda-init
         run: |
           source $CONDA/etc/profile.d/conda.sh
           conda activate mle-dev
@@ -39,11 +33,43 @@ jobs:
         run: |
           source $CONDA/etc/profile.d/conda.sh
           conda activate mle-dev
-          conda install -y flake8
-          flake8 src/ml_package/nonstandardcode.py
+          conda install -y pytest flake8
 
       - name: Display Directory Tree Before Build
         run: tree .
+
+      - name: Install Package in Dev Mode
+        run: |
+          source $CONDA/etc/profile.d/conda.sh
+          conda activate mle-dev
+          pip install -e .
+
+      - name: Run Unit Tests
+        run: |
+          source $CONDA/etc/profile.d/conda.sh
+          conda activate mle-dev
+          pytest tests/
+
+  build:
+    name: Build Package
+    runs-on: ubuntu-latest
+    needs: unit_test # Runs only after unit_test job completes
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Setup Miniconda
+        uses: conda-incubator/setup-miniconda@v3
+        with:
+          conda-version: "24.11.2"
+          environment-file: env.yml
+          activate-environment: mle-dev
+
+      - name: Initialize Conda Environment
+        run: |
+          source $CONDA/etc/profile.d/conda.sh
+          conda activate mle-dev
+          conda config --add channels defaults
 
       - name: Build Package
         run: |
@@ -54,11 +80,24 @@ jobs:
       - name: Display Directory Tree After Build
         run: tree .
 
+      - name: Install the Built Package
+        run: |
+          source $CONDA/etc/profile.d/conda.sh
+          pip install dist/*.whl
+
       - name: Upload Build Artifacts
         uses: actions/upload-artifact@v4
         with:
           name: package-artifacts
           path: dist/
+
+  deploy:
+    name: Deploy and Run Scripts
+    runs-on: ubuntu-latest
+    needs: build # Runs only after the build job completes
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
 
       - name: Download Build Artifacts
         uses: actions/download-artifact@v4
@@ -66,20 +105,34 @@ jobs:
           name: package-artifacts
           path: dist/
 
-      - name: Install the Built Package
+      - name: Setup Miniconda
+        uses: conda-incubator/setup-miniconda@v3
+        with:
+          conda-version: "24.11.2"
+          environment-file: env.yml
+          activate-environment: mle-dev
+
+      - name: Install the Package
         run: |
           source $CONDA/etc/profile.d/conda.sh
           pip install dist/*.whl
 
-      - name: test the Built Package
+      - name: Run Workflow Scripts in Help Mode
         run: |
           source $CONDA/etc/profile.d/conda.sh
           conda activate mle-dev
-          conda install -y pytest
-          python -m pytest tests/test_nonstandardcode.py
+          python src/ml_package/scripts/ingest_data.py -h
+          python src/ml_package/scripts/preprocess_data.py -h
+          python src/ml_package/scripts/score.py -h
 
-      - name: Run the Installed Package
+      - name: Run Workflow Scripts
         run: |
           source $CONDA/etc/profile.d/conda.sh
           conda activate mle-dev
-          python -m ml_package.main
+          python src/ml_package/scripts/ingest_data.py src/ml_package/datasets/housing/
+          echo "Before Preprocessing"
+          ls -R src/ml_package/datasets/housing/
+          python src/ml_package/scripts/preprocess_data.py src/ml_package/datasets/housing/housing.csv src/ml_package/datasets/housing/housing_preprocessed.csv
+          echo "After Preprocessing"
+          ls -R src/ml_package/datasets/housing/
+          python src/ml_package/scripts/score.py src/ml_package/datasets/housing/housing_preprocessed.csv
