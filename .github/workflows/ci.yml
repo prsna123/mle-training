@@ -130,6 +130,7 @@ jobs:
         run: |
           source $CONDA/etc/profile.d/conda.sh
           conda activate mle-dev
+          export PYTHONPATH=$PYTHONPATH:$(pwd)/src
           python src/ml_package/scripts/ingest_data.py src/ml_package/datasets/housing/
           echo "Before Preprocessing"
           ls -R src/ml_package/datasets/housing/
