@@ -118,12 +118,14 @@ jobs:
           pip install dist/*.whl
 
       - name: Run Workflow Scripts in Help Mode
-        run: |
-          source $CONDA/etc/profile.d/conda.sh
-          conda activate mle-dev
-          python src/ml_package/scripts/ingest_data.py -h
-          python src/ml_package/scripts/preprocess_data.py -h
-          python src/ml_package/scripts/score.py -h
+      run: |
+        eval "$(conda shell.bash hook)"
+        conda activate mle-dev
+        export PYTHONPATH=$PYTHONPATH:$(pwd)/src
+        python src/ml_package/scripts/ingest_data.py -h
+        python src/ml_package/scripts/preprocess_data.py -h
+        python src/ml_package/scripts/score.py -h
+
 
       - name: Run Workflow Scripts
         run: |
