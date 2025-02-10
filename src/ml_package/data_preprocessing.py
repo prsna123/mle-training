@@ -28,10 +28,12 @@ def stratified_split(housing):
         ],  # splitting the data in multiple bins [like 0.0 to 1.5 ]
         labels=[1, 2, 3, 4, 5],
     )
-
-    split = StratifiedShuffleSplit(n_splits=1, test_size=0.2, random_state=42)
-    logger.info("Splitting data into train and test sets...")
-    # splitted the equally distributed data based on income category
+    try:
+        split = StratifiedShuffleSplit(n_splits=1, test_size=0.2, random_state=42)
+        logger.info("Splitting data into train and test sets...")
+        # splitted the equally distributed data based on income category
+    except Exception as e:
+        logger.error("Error while startified split of data", e, exc_info=True)
     for train_index, test_index in split.split(housing, housing["income_cat"]):
         strat_train_set = housing.loc[train_index]
         strat_test_set = housing.loc[test_index]
@@ -46,9 +48,12 @@ def preprocess_data(housing):
     """Handles missing values and feature engineering."""
     logger.info("Preprocessing training data..")
     imputer = SimpleImputer(strategy="median")
-    housing_num = housing.drop(
-        "ocean_proximity", axis=1
-    )  # dropping this column since it require only integer
+    try:
+        housing_num = housing.drop(
+            "ocean_proximity", axis=1
+        )  # dropping this column since it require only integer
+    except Exception as e:
+        logger.error("ocean_proximity column is not found", e, exc_info=True)
 
     # responsible for calculating the median of the columns which have missing values
     imputer.fit(housing_num)
