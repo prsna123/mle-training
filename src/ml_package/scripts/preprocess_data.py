@@ -7,18 +7,12 @@ from ml_package.data_preprocessing import preprocess_data, stratified_split
 
 def preprocess_and_save(input_file, output_file):
     """Loads, preprocesses, and saves the processed housing data."""
-    print(f"Loading data from {input_file}...")
     housing = pd.read_csv(input_file)
 
-    print("Splitting data into train and test sets...")
     train_set, _ = stratified_split(housing)
-
-    print("Preprocessing training data...")
     housing_prepared = preprocess_data(train_set.drop("median_house_value", axis=1))
 
-    print(f"Saving preprocessed data to {output_file}...")
     housing_prepared.to_csv(output_file, index=False)
-    print("Preprocessing complete.")
 
 
 if __name__ == "__main__":
