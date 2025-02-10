@@ -1,5 +1,0 @@
-2025-02-05 10:39:53,349 - INFO - Downloads and extracts the housing dataset.
-2025-02-05 10:42:44,972 - INFO - Data Ingestion started
-2025-02-05 10:42:44,972 - INFO - Downloads and extracts the housing dataset.
-2025-02-05 10:42:45,154 - INFO - extracting housing data from ml_package/datasets/housing/housing.tgz..
-2025-02-05 10:42:45,161 - INFO - Data downloaded and saved to datasets/housing..
