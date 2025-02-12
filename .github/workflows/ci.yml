@@ -123,7 +123,7 @@ jobs:
           make html
 
       - name: Display Directory Tree After Building Docs
-        run: tree docs/_build/html
+        run: tree docs/build/html
 
       - name: Upload Documentation Artifacts
         uses: actions/upload-artifact@v4
