@@ -91,6 +91,46 @@ jobs:
           name: package-artifacts
           path: dist/
 
+  build_docs:
+    name: Build Documentation
+    runs-on: ubuntu-latest
+    needs: unit_test # Runs after tests pass
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Setup Miniconda
+        uses: conda-incubator/setup-miniconda@v3
+        with:
+          conda-version: "24.11.2"
+          environment-file: env.yml
+          activate-environment: mle-dev
+
+      - name: Initialize Conda Environment
+        run: |
+          source $CONDA/etc/profile.d/conda.sh
+          conda activate mle-dev
+          conda install -y sphinx sphinx-rtd-theme numpydoc
+
+      - name: Display Directory Tree Before Building Docs
+        run: tree .
+
+      - name: Build Sphinx Documentation
+        run: |
+          source $CONDA/etc/profile.d/conda.sh
+          conda activate mle-dev
+          cd docs
+          make html
+
+      - name: Display Directory Tree After Building Docs
+        run: tree docs/build/html
+
+      - name: Upload Documentation Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: sphinx-docs
+          path: docs/_build/html/
+
   deploy:
     name: Deploy and Run Scripts
     runs-on: ubuntu-latest

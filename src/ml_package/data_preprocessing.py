@@ -12,9 +12,34 @@ logger.info("Loads, preprocesses, and saves the processed housing data.")
 
 def stratified_split(housing):
     """
-    Performs stratified split based on income categories.
-    Reason: Need the data with composed way.
-    Eg: For 100 data's we need to be equally distributed with train and test data
+    Performs stratified splitting of the dataset based on income categories.
+
+    The dataset is split into training and testing sets in a way that maintains
+    the same proportion of income categories in both sets. This ensures a
+    balanced distribution of data.
+
+    Parameters
+    ----------
+    housing : pandas.DataFrame
+        The housing dataset containing a `median_income` column.
+
+    Returns
+    -------
+    tuple of pandas.DataFrame
+        A tuple containing:
+        - `strat_train_set` : The training dataset after stratified splitting.
+        - `strat_test_set` : The testing dataset after stratified splitting.
+
+    Raises
+    ------
+    Exception
+        If an error occurs during stratified splitting.
+
+    Examples
+    --------
+    >>> train_set, test_set = stratified_split(housing_df)
+    >>> print(len(train_set), len(test_set))
+    16512 4128
     """
     housing["income_cat"] = pd.cut(
         housing["median_income"],
@@ -45,7 +70,38 @@ def stratified_split(housing):
 
 
 def preprocess_data(housing):
-    """Handles missing values and feature engineering."""
+    """
+    Preprocesses the housing dataset by handling missing values and creating new features.
+
+    This function:
+    - Handles missing values using the median strategy.
+    - Performs feature engineering by creating new ratio-based features.
+    - Encodes categorical variables using one-hot encoding.
+
+    Parameters
+    ----------
+    housing : pandas.DataFrame
+        The housing dataset containing both numerical and categorical features.
+
+    Returns
+    -------
+    pandas.DataFrame
+        The processed dataset with missing values handled, new features added,
+        and categorical variables one-hot encoded.
+
+    Raises
+    ------
+    Exception
+        If the 'ocean_proximity' column is not found in the dataset.
+
+    Examples
+    --------
+    >>> housing_prepared = preprocess_data(housing_df)
+    >>> housing_prepared.head()
+       longitude  latitude  housing_median_age  ...  rooms_per_household  bedrooms_per_room  population_per_household
+    0 -122.23    37.88     41                  ...  5.445713              0.146590           2.555556
+    1 -122.22    37.86     21                  ...  6.263570              0.190476           2.109842
+    """
     logger.info("Preprocessing training data..")
     imputer = SimpleImputer(strategy="median")
     try:
