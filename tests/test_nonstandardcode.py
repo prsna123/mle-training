@@ -1,6 +1,7 @@
 import importlib.util
 import subprocess
 import sys
+from unittest.mock import patch
 
 import numpy as np
 import pandas as pd
@@ -37,7 +38,8 @@ def test_ispackage_installed():
     assert result.returncode == 0, f"Failed to find package {package_name}"
 
 
-def test_fetch_housing_data():
+@patch("mlflow.start_run")
+def test_fetch_housing_data(mock_start_run):
     """
     Verifies that the data is fetched correctly.
     """
@@ -48,7 +50,8 @@ def test_fetch_housing_data():
         print(f"Data ingestion failed: {e}")
 
 
-def test_load_housing_data():
+@patch("mlflow.start_run")
+def test_load_housing_data(mock_start_run):
     """
     Verifies that the data is loaded correctly
     """
@@ -59,17 +62,20 @@ def test_load_housing_data():
         print(f"Data loading failed: {e}")
 
 
-def test_stratified_split():
+@patch("mlflow.start_run")
+def test_stratified_split(mock_start_run):
     """
     verifies that the loaded data splitted stratically
     """
+    test_data_df = pd.DataFrame(SAMPLE_TEST_DATA)
     try:
-        train_set, test_set = stratified_split()
+        train_set, test_set = stratified_split(test_data_df)
     except Exception as e:
         print(f"failed during splitting: {e}")
 
 
-def test_preprocess_data():
+@patch("mlflow.start_run")
+def test_preprocess_data(mock_start_run):
     """
     verifies that it returns the data without any NaN values
     No NaN values after preprocessing
@@ -88,7 +94,8 @@ def test_preprocess_data():
     ), "Feature engineering columns are missing!"
 
 
-def test_train_linear_regression():
+@patch("mlflow.start_run")
+def test_train_linear_regression(mock_start_run):
     """
     Tests Linear Regression training by verifying:
     - No NaN values after preprocessing
