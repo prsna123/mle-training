@@ -1,0 +1,15 @@
+artifact_uri: file:///home/prsna/mle-training/tests/mlruns/0/54b3e160264547fc973bc508b69f78af/artifacts
+end_time: 1741588401507
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: 54b3e160264547fc973bc508b69f78af
+run_name: colorful-yak-500
+run_uuid: 54b3e160264547fc973bc508b69f78af
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1741588400767
+status: 3
+tags: []
+user_id: prsna
