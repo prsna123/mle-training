@@ -8,3 +8,6 @@ dist/
 __pycache__
 logs/
 settings.json
+
+src/ml_package/mlruns/
+*.pkl

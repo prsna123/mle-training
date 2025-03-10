@@ -1,6 +1,7 @@
 import os
 import tarfile
 
+import mlflow
 import pandas as pd
 from six.moves import urllib
 
@@ -49,26 +50,34 @@ def fetch_housing_data(housing_url=HOUSING_URL, housing_path=HOUSING_PATH):
     >>> print(success)
     True
     """
+    with mlflow.start_run(run_name="Fetch Housing Data", nested=True):
+        mlflow.log_param("housing_url", housing_url)
+        mlflow.log_param("housing_path", housing_path)
 
-    try:
-        logger.info("Data Ingestion started")
-        os.makedirs(housing_path, exist_ok=True)
-        tgz_path = os.path.join(housing_path, "housing.tgz")
-        urllib.request.urlretrieve(housing_url, tgz_path)
-        housing_tgz = tarfile.open(tgz_path)
-        housing_tgz.extractall(path=housing_path)
-        housing_tgz.close()
-        logger.info(f"Data downloaded and saved to {HOUSING_PATH}..")
-        return True
-    except FileNotFoundError as e:
-        logger.error(f"File not found. Check if the dataset exists: {e}", exc_info=True)
-    except PermissionError as e:
-        logger.error(f"Permission denied while accessing files: {e}", exc_info=True)
-    except Exception as e:
-        logger.critical(
-            f"An unexpected error occurred during data ingestion! {e}", exc_info=True
-        )
-    return False
+        try:
+            logger.info("Data Ingestion started")
+            os.makedirs(housing_path, exist_ok=True)
+            tgz_path = os.path.join(housing_path, "housing.tgz")
+            urllib.request.urlretrieve(housing_url, tgz_path)
+            housing_tgz = tarfile.open(tgz_path)
+            housing_tgz.extractall(path=housing_path)
+            housing_tgz.close()
+            logger.info(f"Data downloaded and saved to {HOUSING_PATH}..")
+            return True
+        except FileNotFoundError as e:
+            logger.error(
+                f"File not found. Check if the dataset exists: {e}", exc_info=True
+            )
+            return False
+        except PermissionError as e:
+            logger.error(f"Permission denied while accessing files: {e}", exc_info=True)
+            return False
+        except Exception as e:
+            logger.critical(
+                f"An unexpected error occurred during data ingestion! {e}",
+                exc_info=True,
+            )
+            return False
 
 
 def load_housing_data(housing_path=HOUSING_PATH):
@@ -90,10 +99,14 @@ def load_housing_data(housing_path=HOUSING_PATH):
     >>> df = load_housing_data("datasets/housing/housing.csv")
     >>> print(df.head())
     """
-
-    try:
-        csv_path = os.path.join(housing_path, "housing.csv")
-        return pd.read_csv(csv_path)
-    except Exception as e:
-        logger.error(f"Problem while loading housing data: {e}", exc_info=True)
-        return None  # ✅ Added explicit return
+    with mlflow.start_run(run_name="Load Housing Data", nested=True):
+        mlflow.log_param("housing_path", housing_path)
+        try:
+            csv_path = os.path.join(housing_path, "housing.csv")
+            df = pd.read_csv(csv_path)
+            mlflow.log_metric("rows", df.shape[0])
+            mlflow.log_metric("columns", df.shape[1])
+            return df
+        except Exception as e:
+            logger.error(f"Problem while loading housing data: {e}", exc_info=True)
+            return None
